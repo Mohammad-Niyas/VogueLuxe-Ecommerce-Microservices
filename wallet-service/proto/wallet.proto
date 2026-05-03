@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package wallet;
+
+option go_package = "./pkg/pb";
+
+// The Wallet Service definition.
+service WalletService {
+  rpc GetWallet (GetWalletRequest) returns (GetWalletResponse);
+  rpc CreateTransaction (CreateTransactionRequest) returns (CreateTransactionResponse);
+  rpc ConfirmPayment (ConfirmPaymentRequest) returns (ConfirmPaymentResponse);
+  rpc DebitWallet (DebitWalletRequest) returns (DebitWalletResponse);
+}
+
+// 4. Debit Wallet (For Checkout)
+message DebitWalletRequest {
+  uint32 user_id = 1;
+  double amount = 2;
+  string order_id = 3;
+}
+
+message DebitWalletResponse {
+  string status = 1;
+  string message = 2;
+  string transaction_id = 3;}
+
+// 1. Get Wallet
+message GetWalletRequest {
+  uint32 user_id = 1;
+}
+
+message Wallet {
+  uint32 id = 1;
+  uint32 user_id = 2;
+  double balance = 3;
+}
+
+message Transaction {
+  string transaction_uid = 1;
+  double amount = 2;
+  string type = 3; // "credit" or "debit"
+  string status = 4; // "Pending", "Completed", "Failed"
+  string date = 5;
+  string description = 6;
+}
+
+message GetWalletResponse {
+  Wallet wallet = 1;
+  repeated Transaction transactions = 2;
+}
+
+// 2. Create Transaction (Add Funds / Razorpay Order)
+message CreateTransactionRequest {
+  uint32 user_id = 1;
+  double amount = 2;
+}
+
+message CreateTransactionResponse {
+  string status = 1;
+  string message = 2;
+  string razorpay_order_id = 3;
+  double amount = 4;
+  string currency = 5;
+  string key = 6;
+  string transaction_id = 7;
+  string name = 8;
+  string email = 9;
+}
+
+// 3. Confirm Payment
+message ConfirmPaymentRequest {
+  uint32 user_id = 1;
+  string transaction_id = 2;
+  string razorpay_payment_id = 3;
+  string razorpay_order_id = 4;
+  string razorpay_signature = 5;
+  string error = 6;
+}
+
+message ConfirmPaymentResponse {
+  string status = 1;
+  string message = 2;
+  string redirect_url = 3;
+}

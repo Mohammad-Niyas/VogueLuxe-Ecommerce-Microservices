@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package wishlist;
+
+option go_package = "./pkg/pb";
+
+// The Wishlist Service definition.
+service WishlistService {
+  rpc AddToWishlist (AddRequest) returns (AddResponse);
+  rpc RemoveFromWishlist (RemoveRequest) returns (RemoveResponse);
+  rpc GetWishlist (GetRequest) returns (GetResponse);
+}
+
+// Messages (Data structures)
+message AddRequest {
+  uint32 user_id = 1;
+  uint32 product_id = 2;
+  uint32 variant_id = 3; 
+}
+
+message AddResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message RemoveRequest {
+  uint32 user_id = 1;
+  uint32 wishlist_item_id = 2;
+}
+
+message RemoveResponse {
+  string status = 1;
+  string message = 2;
+}
+
+message GetRequest {
+  uint32 user_id = 1;
+}
+
+message WishlistItem {
+  uint32 id = 1;
+  uint32 product_id = 2;
+  uint32 variant_id = 3;
+}
+
+message GetResponse {
+  repeated WishlistItem items = 1;
+}
